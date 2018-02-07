@@ -4,5 +4,7 @@
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">1M7ebk4Ju5qOlZNYhSF2TpNEJrnPslcsUwjwsOxHjYL4Mxpaza</string>
     <string name="authentication_failed">Authentication Failed</string>
     <string name="logout">Logout</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="something_wrong">Opps! something went wrong</string>
 
 </resources>

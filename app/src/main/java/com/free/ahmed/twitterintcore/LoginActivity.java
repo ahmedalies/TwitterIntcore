@@ -30,10 +30,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void success(Result<TwitterSession> result) {
                 TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
-                TwitterAuthToken authToken = session.getAuthToken();
-                String token = authToken.token;
-                String secret = authToken.secret;
-
                 login(session);
             }
 
@@ -53,8 +49,24 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(TwitterSession session){
+        TwitterAuthToken authToken = session.getAuthToken();
+        String token = authToken.token;
+        String secret = authToken.secret;
+        String name = session.getUserName();
+
         getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).edit()
                 .putBoolean(Constants.AUTH, true).apply();
+
+        getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).edit()
+                .putString(Constants.TOKEN, token).apply();
+
+        getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).edit()
+                .putString(Constants.SECRET, secret).apply();
+
+        getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).edit()
+                .putString(Constants.USERNAME, name).apply();
+
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
