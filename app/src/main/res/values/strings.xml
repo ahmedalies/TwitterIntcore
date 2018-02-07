@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TwitterIntcore</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">ulKnn12YaeuHTtNeehuFHAMuL</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">1M7ebk4Ju5qOlZNYhSF2TpNEJrnPslcsUwjwsOxHjYL4Mxpaza</string>
+    <string name="authentication_failed">Authentication Failed</string>
+
 </resources>
