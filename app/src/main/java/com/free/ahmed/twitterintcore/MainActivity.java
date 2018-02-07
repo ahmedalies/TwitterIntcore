@@ -25,15 +25,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.models.User;
 
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.Adapter mAdapter;
     SwipeRefreshLayout mSwipeRefreshLayout;
     String nextCursor;
+    private boolean loading = true;
+    int lastVisibleItem, visibleItemCount, totalItemCount;
+    LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +70,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 refresh();
+            }
+        });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0){
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = mLayoutManager.getItemCount();
+                    lastVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading){
+                        if ( (visibleItemCount + lastVisibleItem) >= totalItemCount){
+                            loading = false;
+                            addListNext(nextCursor);
+                        }
+                    }
+                }
             }
         });
     }
@@ -116,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 MyTwitterApiClient apiClient = new MyTwitterApiClient(session);
+
                 apiClient.getCustomService().list(response.body().id, 2, 20).enqueue(new retrofit2.Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -136,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         String result = sb.toString();
                         JsonObject obj = new Gson().fromJson(result,JsonObject.class);
                         JsonArray usersArray= (JsonArray) obj.get("users");
+                        nextCursor = obj.get("next_cursor_str").getAsString();
                         mUsers = new ArrayList<>();
                         for(int i = 0; i < usersArray.size(); i++){
                             JsonObject userObject = (JsonObject) usersArray.get(i);
@@ -149,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                             mUsers.add(user);
                         }
 
-                        updateUi();
+                        updateUi(null);
                     }
 
                     @Override
@@ -165,6 +184,73 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void addListNext(final String next){
+        if (!isInternetConnection()){
+            Toast.makeText(this, R.string.no_internet, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
+
+        Call<User> userCall = TwitterCore.getInstance().getApiClient(session).
+                getAccountService().verifyCredentials(true, false, false);
+
+        userCall.enqueue(new retrofit2.Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                MyTwitterApiClient apiClient = new MyTwitterApiClient(session);
+
+                apiClient.getCustomService().nextCursor(response.body().id, 2, 20, next).enqueue(new retrofit2.Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        BufferedReader reader = null;
+                        StringBuilder sb = new StringBuilder();
+
+                        reader = new BufferedReader(new InputStreamReader(response.body().byteStream()));
+                        String line;
+
+                        try {
+                            while ((line = reader.readLine()) != null) {
+                                sb.append(line);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        String result = sb.toString();
+                        JsonObject obj = new Gson().fromJson(result,JsonObject.class);
+                        JsonArray usersArray= (JsonArray) obj.get("users");
+                        nextCursor = obj.get("next_cursor_str").getAsString();
+                        for(int i = 0; i < usersArray.size(); i++){
+                            JsonObject userObject = (JsonObject) usersArray.get(i);
+                            Log.i("json-user",userObject.toString());
+                            com.free.ahmed.twitterintcore.User user = new com.free.ahmed.twitterintcore.User();
+                            user.setId(userObject.get("id_str").getAsString());
+                            user.setBio(userObject.get("description").getAsString());
+                            user.setImageUrl(userObject.get("profile_image_url").getAsString());
+                            user.setName(userObject.get("name").getAsString());
+                            Log.i("twitter-user",user.toString());
+                            mUsers.add(user);
+                        }
+
+                        updateUi(next);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(MainActivity.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private class FollowersViewHolder extends RecyclerView.ViewHolder{
 
@@ -213,16 +299,22 @@ public class MainActivity extends AppCompatActivity {
         return connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    private void updateUi(){
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        }
-        else{
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        }
+    private void updateUi(String next){
+        if (next == null) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                mLayoutManager = new LinearLayoutManager(this);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+            } else {
+                mLayoutManager = new GridLayoutManager(this, 3);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+            }
 
-        mAdapter = new FollowersRecyclerAdapter();
-        mRecyclerView.setAdapter(mAdapter);
+            mAdapter = new FollowersRecyclerAdapter();
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(lastVisibleItem + 1);
+        }
     }
 
     @Override
@@ -231,7 +323,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refresh(){
-        updateUi();
+        updateUi(null);
         mSwipeRefreshLayout.setRefreshing(false);
+        loading = true;
     }
 }
