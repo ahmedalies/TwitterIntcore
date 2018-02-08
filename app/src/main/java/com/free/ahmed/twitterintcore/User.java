@@ -1,14 +1,25 @@
 package com.free.ahmed.twitterintcore;
 
+import java.io.Serializable;
+
 /**
  * Created by ahmed on 2/7/2018.
  */
 
-public class User {
+public class User implements Serializable{
     private String id;
     private String imageUrl;
     private String bio;
     private String name;
+    private String screenName;
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public void setScreenName(String screenName) {
+        this.screenName = screenName;
+    }
 
     public String getName() {
         return name;

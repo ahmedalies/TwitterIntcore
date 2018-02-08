@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         Twitter.initialize(this);
         setContentView(R.layout.activity_main);
 
-        //startLogin();
         if (!getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).getBoolean(Constants.AUTH, false)){
            startLogin();
         }
@@ -164,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                             user.setBio(userObject.get("description").getAsString());
                             user.setImageUrl(userObject.get("profile_image_url").getAsString());
                             user.setName(userObject.get("name").getAsString());
+                            user.setScreenName(userObject.get("screen_name").getAsString());
                             Log.i("twitter-user",user.toString());
                             mUsers.add(user);
                         }
@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
                             user.setBio(userObject.get("description").getAsString());
                             user.setImageUrl(userObject.get("profile_image_url").getAsString());
                             user.setName(userObject.get("name").getAsString());
+                            user.setScreenName(userObject.get("screen_name").getAsString());
                             Log.i("twitter-user",user.toString());
                             mUsers.add(user);
                         }
@@ -276,10 +277,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(FollowersViewHolder holder, int position) {
+        public void onBindViewHolder(FollowersViewHolder holder, final int position) {
             holder.usernameView.setText(mUsers.get(position).getName());
             holder.bioView.setText(mUsers.get(position).getBio());
             Picasso.with(MainActivity.this).load(mUsers.get(position).getImageUrl()).into(holder.ppView);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = FollowerActivity.createIntent(mUsers, position, MainActivity.this);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override

@@ -20,6 +20,10 @@
         </activity>
         <activity android:name=".LoginActivity">
         </activity>
+        <activity android:name=".FollowerActivity">
+        </activity>
+        <activity android:name=".ImageBrowserActivity">
+        </activity>
     </application>
 
 </manifest>
