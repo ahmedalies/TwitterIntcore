@@ -77,7 +77,9 @@ public class FollowerInformationFragment extends Fragment {
             }
         });
 
-        Picasso.with(getActivity()).load(mUser.getImageUrl()).into(ppImageView);
+        if (!mUser.getImageUrl().equals("")) {
+            Picasso.with(getActivity()).load(mUser.getImageUrl()).into(ppImageView);
+        }
         mRecyclerView = view.findViewById(R.id.tweets_rec_view);
 
         mUserTimeline = new UserTimeline.Builder().screenName(mUser.getScreenName()).maxItemsPerRequest(10).build();

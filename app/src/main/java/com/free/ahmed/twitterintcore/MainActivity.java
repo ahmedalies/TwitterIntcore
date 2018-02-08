@@ -164,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
                             com.free.ahmed.twitterintcore.User user = new com.free.ahmed.twitterintcore.User();
                             user.setId(userObject.get("id_str").getAsString());
                             user.setBio(userObject.get("description").getAsString());
-                            user.setImageUrl(userObject.get("profile_image_url").getAsString());
+                            String url = userObject.get("profile_image_url").getAsString();
+                            if (!url.equals("")) {
+                                user.setImageUrl(userObject.get("profile_image_url").getAsString());
+                            }
                             user.setName(userObject.get("name").getAsString());
                             user.setScreenName(userObject.get("screen_name").getAsString());
                             Log.i("twitter-user",user.toString());
@@ -231,7 +234,10 @@ public class MainActivity extends AppCompatActivity {
                             com.free.ahmed.twitterintcore.User user = new com.free.ahmed.twitterintcore.User();
                             user.setId(userObject.get("id_str").getAsString());
                             user.setBio(userObject.get("description").getAsString());
-                            user.setImageUrl(userObject.get("profile_image_url").getAsString());
+                            String url = userObject.get("profile_image_url").getAsString();
+                            if (!url.equals("")) {
+                                user.setImageUrl(userObject.get("profile_image_url").getAsString());
+                            }
                             user.setName(userObject.get("name").getAsString());
                             user.setScreenName(userObject.get("screen_name").getAsString());
                             Log.i("twitter-user",user.toString());
@@ -283,7 +289,9 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(FollowersViewHolder holder, final int position) {
             holder.usernameView.setText(mUsers.get(position).getName());
             holder.bioView.setText(mUsers.get(position).getBio());
-            Picasso.with(MainActivity.this).load(mUsers.get(position).getImageUrl()).into(holder.ppView);
+            if (!mUsers.get(position).getImageUrl().equals("")) {
+                Picasso.with(MainActivity.this).load(mUsers.get(position).getImageUrl()).into(holder.ppView);
+            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
