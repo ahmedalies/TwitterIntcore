@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تويتر انتكور</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">ulKnn12YaeuHTtNeehuFHAMuL</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">1M7ebk4Ju5qOlZNYhSF2TpNEJrnPslcsUwjwsOxHjYL4Mxpaza</string>
+    <string name="authentication_failed">خطأ فى المصادقة</string>
+    <string name="logout">تسجيل خروج</string>
+    <string name="no_internet">لا يوجد انترنت</string>
+    <string name="something_wrong">خطأ فى العملية</string>
+    <string name="pp_shared">pp_shared</string>
+    <string name="change_language">English</string>
+</resources>

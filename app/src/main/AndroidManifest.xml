@@ -20,9 +20,9 @@
         </activity>
         <activity android:name=".LoginActivity">
         </activity>
-        <activity android:name=".FollowerActivity">
+        <activity android:name=".FollowerActivity" android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".ImageBrowserActivity">
+        <activity android:name=".ImageBrowserActivity" android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

@@ -1,10 +1,13 @@
 package com.free.ahmed.twitterintcore;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,6 +61,23 @@ public class FollowerInformationFragment extends Fragment {
         mCollapsingToolbarLayout.setContentScrimColor(Color.GREEN);
 
         ppImageView = view.findViewById(R.id.pp_view);
+
+        ppImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ImageBrowserActivity.createIntent(getActivity(), mUser.getImageUrl());
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        getActivity(),
+                        ppImageView,
+                        getResources().getString(R.string.pp_shared));
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent, optionsCompat.toBundle());
+                } else {
+                    startActivity(intent);
+                }
+            }
+        });
+
         Picasso.with(getActivity()).load(mUser.getImageUrl()).into(ppImageView);
         mRecyclerView = view.findViewById(R.id.tweets_rec_view);
 

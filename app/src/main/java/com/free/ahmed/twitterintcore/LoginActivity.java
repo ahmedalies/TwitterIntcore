@@ -1,6 +1,8 @@
 package com.free.ahmed.twitterintcore;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,19 +27,27 @@ public class LoginActivity extends AppCompatActivity {
         Twitter.initialize(this);
         setContentView(R.layout.activity_login);
 
-        loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
-            @Override
-            public void success(Result<TwitterSession> result) {
-                TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
-                login(session);
-            }
 
-            @Override
-            public void failure(TwitterException exception) {
-                Toast.makeText(LoginActivity.this, R.string.authentication_failed, Toast.LENGTH_SHORT).show();
-            }
-        });
+        getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).edit()
+                .putString(Constants.LANGUAGE, "en").apply();
+
+        loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
+        if (isInternetConnection()){
+            loginButton.setCallback(new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> result) {
+                    TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                    login(session);
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    Toast.makeText(LoginActivity.this, R.string.authentication_failed, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(LoginActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -71,4 +81,15 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public  boolean isInternetConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager.getActiveNetworkInfo() == null){
+            return false;
+        }
+
+        return connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
 }

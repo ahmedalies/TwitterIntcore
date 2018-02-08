@@ -52,4 +52,5 @@ public class FollowerActivity extends AppCompatActivity {
 
         mViewPager.setCurrentItem(startPos);
     }
+
 }

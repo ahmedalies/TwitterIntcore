@@ -5,4 +5,8 @@
     <item android:title="@string/logout"
         app:showAsAction="never"
         android:id="@+id/menu_logout"/>
+
+    <item android:title="@string/change_language"
+          app:showAsAction="never"
+          android:id="@+id/menu_change_language"/>
 </menu>

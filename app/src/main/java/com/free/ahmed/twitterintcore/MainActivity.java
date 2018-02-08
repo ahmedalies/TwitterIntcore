@@ -35,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -105,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).edit()
                         .putBoolean(Constants.AUTH, false).apply();
                 startLogin();
+                return true;
+            case R.id.menu_change_language:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
