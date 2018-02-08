@@ -12,9 +12,17 @@ import retrofit2.http.Query;
 
 public interface Api {
     @GET("/1.1/followers/list.json")
-    Call<ResponseBody> list(@Query("user_id") long id, @Query("skip_status") int skip_status, @Query("count") int count);
+    Call<ResponseBody> list(
+            @Query("user_id") long id,
+            @Query("skip_status") int skip_status,
+            @Query("count") int count
+    );
 
     @GET("/1.1/followers/list.json")
-    Call<ResponseBody> nextCursor(@Query("user_id") long id, @Query("skip_status") int skip_status,
-                                  @Query("count") int count, @Query("cursor") String nextCursor);
+    Call<ResponseBody> nextCursor(
+            @Query("user_id") long id,
+            @Query("skip_status") int skip_status,
+            @Query("count") int count,
+            @Query("cursor") String nextCursor
+    );
 }
