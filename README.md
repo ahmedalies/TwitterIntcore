@@ -1,5 +1,7 @@
 # TwitterIntcore
 
+An Android Twitter Client
+
 Libraries used:
   1- Picasso 2.5.2
     Handling ImageView recycling and download cancelation in an adapter.
