@@ -58,7 +58,6 @@ public class FollowerInformationFragment extends Fragment {
 
         mCollapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         mCollapsingToolbarLayout.setTitle(mUser.getName());
-        mCollapsingToolbarLayout.setContentScrimColor(Color.GREEN);
 
         ppImageView = view.findViewById(R.id.pp_view);
 

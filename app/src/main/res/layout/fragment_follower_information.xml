@@ -15,18 +15,14 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="300dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginEnd="64dp">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimary">
 
             <ImageView
                 android:id="@+id/pp_view"
@@ -34,7 +30,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:scaleType="centerCrop"
-                android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax"
                 android:src="@drawable/user_pp_default"
                 />
@@ -44,8 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_scrollFlags="scroll|enterAlways"/>
+                app:layout_collapseMode="pin"
+                android:elevation="4dp"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
